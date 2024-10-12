@@ -287,13 +287,17 @@ private:
             case HeaderValue:
                 if( input == '\r' )
                 {
+                    Request::HeaderItem &h = req.headers.back();
+
                     if( req.method == "POST" || req.method == "PUT" )
                     {
-                        Request::HeaderItem &h = req.headers.back();
+
 
                         if( strcasecmp(h.name.c_str(), "Content-Length") == 0 )
                         {
                             contentSize = atoi(h.value.c_str());
+                            req.contentLength = contentSize;
+                            contentSize = 0;
                             req.content.reserve( contentSize );
                         }
                         else if( strcasecmp(h.name.c_str(), "Transfer-Encoding") == 0 )
@@ -301,6 +305,9 @@ private:
                             if(strcasecmp(h.value.c_str(), "chunked") == 0)
                                 chunked = true;
                         }
+                    }
+                    if (strcasecmp(h.name.c_str(), "X-Upstream-Server") == 0) {
+                        req.xUpstreamServer = h.value;
                     }
                     state = ExpectingNewline_2;
                 }
@@ -363,10 +370,12 @@ private:
                 break;
             }
             case Post:
+                return ParsingCompleted;
+
                 --contentSize;
                 req.content.push_back( input );
 
-                if( contentSize == 0 )
+                if( contentSize <= 0 )
                 {
                     return ParsingCompleted;
                 }

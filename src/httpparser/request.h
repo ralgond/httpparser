@@ -28,6 +28,8 @@ struct Request {
     std::string uri;
     int versionMajor;
     int versionMinor;
+    long contentLength;
+    std::string xUpstreamServer;
     std::vector<HeaderItem> headers;
     std::vector<char> content;
     bool keepAlive;
@@ -46,7 +48,9 @@ struct Request {
 
         std::string data(content.begin(), content.end());
         stream << data << "\n";
-        stream << "+ keep-alive: " << keepAlive << "\n";;
+        stream << "+ keep-alive: " << keepAlive << "\n";
+        stream << "+ content-length: " << contentLength << "\n";
+        stream << "+ x-upstream-server: " << xUpstreamServer << "\n";
         return stream.str();
     }
 };
