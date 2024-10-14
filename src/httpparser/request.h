@@ -57,12 +57,13 @@ struct Request {
     std::string headerToString() const {
         std::stringstream stream;
         stream << method << " " << uri << " HTTP/"
-               << versionMajor << "." << versionMinor << "\n";
+               << versionMajor << "." << versionMinor << "\r\n";
         for(std::vector<Request::HeaderItem>::const_iterator it = headers.begin();
             it != headers.end(); ++it)
         {
-            stream << it->name << ": " << it->value << "\n";
+            stream << it->name << ": " << it->value << "\r\n";
         }
+        stream << "\r\n";
         return stream.str();
     }
 };

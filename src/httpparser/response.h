@@ -55,14 +55,14 @@ struct Response {
     {
         std::stringstream stream;
         stream << "HTTP/" << versionMajor << "." << versionMinor
-               << " " << statusCode << " " << status << "\n";
+               << " " << statusCode << " " << status << "\r\n";
 
         for(std::vector<Response::HeaderItem>::const_iterator it = headers.begin();
             it != headers.end(); ++it)
         {
-            stream << it->name << ": " << it->value << "\n";
+            stream << it->name << ": " << it->value << "\r\n";
         }
-
+        stream << "\r\n";
         return stream.str();
     }
 };
