@@ -15,7 +15,7 @@ namespace httpparser
 
 struct Request {
     Request()
-        : versionMajor(0), versionMinor(0), keepAlive(false)
+        : versionMajor(0), versionMinor(0), contentLength(0), keepAlive(false)
     {}
     
     struct HeaderItem
@@ -51,6 +51,18 @@ struct Request {
         stream << "+ keep-alive: " << keepAlive << "\n";
         stream << "+ content-length: " << contentLength << "\n";
         stream << "+ x-upstream-server: " << xUpstreamServer << "\n";
+        return stream.str();
+    }
+
+    std::string headerToString() const {
+        std::stringstream stream;
+        stream << method << " " << uri << " HTTP/"
+               << versionMajor << "." << versionMinor << "\n";
+        for(std::vector<Request::HeaderItem>::const_iterator it = headers.begin();
+            it != headers.end(); ++it)
+        {
+            stream << it->name << ": " << it->value << "\n";
+        }
         return stream.str();
     }
 };

@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <sstream>
 
 #include "response.h"
 
@@ -293,7 +294,9 @@ private:
 
                     if( strcasecmp(h.name.c_str(), "Content-Length") == 0 )
                     {
-                        contentSize = atoi(h.value.c_str());
+                        std::istringstream iss(h.value);
+                        iss >> resp.contentLength;
+                        contentSize = 0;
                         resp.content.reserve( contentSize );
                     }
                     else if( strcasecmp(h.name.c_str(), "Transfer-Encoding") == 0 )

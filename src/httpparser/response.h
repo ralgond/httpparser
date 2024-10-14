@@ -15,7 +15,7 @@ namespace httpparser
 
 struct Response {
     Response()
-        : versionMajor(0), versionMinor(0), keepAlive(false), statusCode(0)
+        : versionMajor(0), versionMinor(0), contentLength(0), keepAlive(false), statusCode(0)
     {}
     
     struct HeaderItem
@@ -26,6 +26,7 @@ struct Response {
 
     int versionMajor;
     int versionMinor;
+    long contentLength;
     std::vector<HeaderItem> headers;
     std::vector<char> content;
     bool keepAlive;
@@ -47,6 +48,21 @@ struct Response {
 
         std::string data(content.begin(), content.end());
         stream << data << "\n";
+        return stream.str();
+    }
+
+    std::string headerToString() const
+    {
+        std::stringstream stream;
+        stream << "HTTP/" << versionMajor << "." << versionMinor
+               << " " << statusCode << " " << status << "\n";
+
+        for(std::vector<Response::HeaderItem>::const_iterator it = headers.begin();
+            it != headers.end(); ++it)
+        {
+            stream << it->name << ": " << it->value << "\n";
+        }
+
         return stream.str();
     }
 };
