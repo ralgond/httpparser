@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <sstream>
 
 #include "request.h"
 
@@ -295,8 +296,8 @@ private:
 
                         if( strcasecmp(h.name.c_str(), "Content-Length") == 0 )
                         {
-                            contentSize = atoi(h.value.c_str());
-                            req.contentLength = contentSize;
+                            std::istringstream iss(h.value);
+                            iss >> req.contentLength;
                             contentSize = 0;
                             req.content.reserve( contentSize );
                         }
